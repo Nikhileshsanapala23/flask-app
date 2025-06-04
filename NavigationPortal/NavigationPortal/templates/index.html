@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+
+{% block title %}Home - JSON Downloader Portal{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-10">
+        <div class="card border-0 shadow-sm">
+            <div class="card-body p-5">
+                <div class="alert alert-info">
+                    <h5>Welcome to JSON Downloader Portal</h5>
+                    <p>This system allows you to automatically download JSON files from external portals with your credentials.</p>
+                </div>
+                
+                <div class="row mt-5">
+                    <div class="col-md-6">
+                        <div class="card mb-4 h-100">
+                            <div class="card-body">
+                                <h5 class="card-title"><i class="fas fa-cogs me-2"></i>Portal Configuration</h5>
+                                <p class="card-text">Configure external portals for JSON file downloads, including URLs and authentication methods.</p>
+                                {% if session.get('user_id') %}
+                                <a href="{{ url_for('portal_config') }}" class="btn btn-outline-dark">Configure Portals</a>
+                                {% else %}
+                                <a href="{{ url_for('login') }}" class="btn btn-outline-dark">Login to Configure</a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <div class="card mb-4 h-100">
+                            <div class="card-body">
+                                <h5 class="card-title"><i class="fas fa-key me-2"></i>Credentials Management</h5>
+                                <p class="card-text">Securely store and manage your portal credentials for automated JSON downloads.</p>
+                                {% if session.get('user_id') %}
+                                <a href="{{ url_for('user_credentials') }}" class="btn btn-outline-dark">Manage Credentials</a>
+                                {% else %}
+                                <a href="{{ url_for('login') }}" class="btn btn-outline-dark">Login to Manage</a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <div class="card mb-4 h-100">
+                            <div class="card-body">
+                                <h5 class="card-title"><i class="fas fa-calendar-alt me-2"></i>Schedule Downloads</h5>
+                                <p class="card-text">Schedule JSON downloads for specific date ranges from your configured portals.</p>
+                                {% if session.get('user_id') %}
+                                <a href="{{ url_for('download_operation') }}" class="btn btn-outline-dark">Schedule Downloads</a>
+                                {% else %}
+                                <a href="{{ url_for('login') }}" class="btn btn-outline-dark">Login to Schedule</a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <div class="card mb-4 h-100">
+                            <div class="card-body">
+                                <h5 class="card-title"><i class="fas fa-history me-2"></i>Download History</h5>
+                                <p class="card-text">View and manage your download history, including statuses and results.</p>
+                                {% if session.get('user_id') %}
+                                <a href="{{ url_for('download_history') }}" class="btn btn-outline-dark">View History</a>
+                                {% else %}
+                                <a href="{{ url_for('login') }}" class="btn btn-outline-dark">Login to View</a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                {% if not session.get('user_id') %}
+                <div class="text-center mt-5">
+                    <p>New to the platform? Get started by creating an account.</p>
+                    <a href="{{ url_for('register') }}" class="btn btn-dark">Register Now</a>
+                    <a href="{{ url_for('login') }}" class="btn btn-outline-dark ms-2">Login</a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

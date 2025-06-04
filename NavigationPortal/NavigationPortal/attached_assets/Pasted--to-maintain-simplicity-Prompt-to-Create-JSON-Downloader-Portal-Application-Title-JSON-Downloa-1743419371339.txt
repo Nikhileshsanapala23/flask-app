@@ -1,0 +1,88 @@
+ to maintain simplicity.
+
+Prompt to Create JSON Downloader Portal Application
+Title: JSON Downloader Portal
+
+Description: This application automates the downloading of JSON files from external portals/APIs while managing user credentials and scheduling downloads.
+
+1. User Interface
+Color Theme: Use black and white only.
+Font Style: Use a simple sans-serif font for readability.
+2. Key Pages and Functions
+2.1 Home Page
+Function: Display a welcome message.
+Text: "Welcome to the JSON Downloader Portal. This system allows you to automatically download JSON files from external portals."
+HTML Code:
+<div class="alert alert-info">
+    <h5>Welcome to JSON Downloader Portal</h5>
+    <p>This system allows you to automatically download JSON files from external portals with your credentials.</p>
+</div>
+2.2 User Management
+Function: Register, promote, demote, and delete users.
+Text: "Manage user accounts including registering new users and modifying existing accounts."
+HTML Code for Admin Panel:
+<div>
+    <h1>User Management</h1>
+    <button>Add New User</button>
+</div>
+2.3 Portal Configuration
+Function: Add or edit external portal configurations.
+Text: "Configure the external portals for JSON file downloads."
+HTML Code:
+<h1>Portal Configuration</h1>
+<form method="POST">
+    <label>Portal Name:</label><input type="text" />
+    <button>Add Portal</button>
+</form>
+2.4 User Credentials
+Function: Manage portal credentials for users.
+Text: "Add, edit, or delete your portal credentials."
+HTML Code:
+<h1>Manage Credentials</h1>
+<form method="POST">
+    <label>Portal:</label><select></select>
+    <label>Username:</label><input type="text" />
+    <label>Password:</label><input type="password" />
+    <button>Save</button>
+</form>
+2.5 Download Operation
+Function: Schedule downloads based on selected credentials.
+Text: "Select the portal credential and date range for downloading."
+HTML Code:
+<h1>Schedule Download</h1>
+<label>Start Date:</label><input type="date" />
+<label>End Date:</label><input type="date" />
+<button>Schedule</button>
+3. Backend Functionality
+3.1 User Registration and Management Functions
+Function: Create, delete, and manage users.
+def register_user(username, password):
+    # Code to register user
+    pass
+def delete_user(user_id):
+    # Code to delete user
+    pass
+3.2 Portal Configuration Functions
+Function: Add, edit, and delete portal configurations.
+def add_portal(name, url):
+    # Code to add portal
+    pass
+def delete_portal(portal_id):
+    # Code to delete portal
+    pass
+3.3 Download Functions
+Function: Schedule downloads and manage download history.
+def schedule_download(user_id, portal_id, start_date, end_date):
+    # Code to schedule downloads
+    pass
+4. Deployment on Replit
+Binding Port: Use port 5000 for deploying the application.
+Example of Running the Flask Application
+from flask import Flask
+app = Flask(__name__)
+@app.route('/')
+def home():
+    return "<h1>Welcome to JSON Downloader Portal</h1>"
+if __name__ == "__main__":
+    app.run(host='0.0.0.0', port=5000)
+This prompt provides a structured approach to developing your application with a focus on simplicity and functionality. You can build upon this as needed.

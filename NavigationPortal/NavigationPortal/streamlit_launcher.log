@@ -1,0 +1,13 @@
+2025-04-05 11:50:30,933 - root - INFO - Starting Streamlit application
+2025-04-05 11:50:30,933 - root - INFO - DATABASE_URL exists: True
+2025-04-05 11:50:30,933 - root - INFO - Running command: streamlit run streamlit_interface.py --server.port=8501 --server.address=0.0.0.0 --server.headless=true
+2025-04-05 11:51:21,026 - root - INFO - Starting Streamlit application
+2025-04-05 11:51:21,026 - root - INFO - DATABASE_URL exists: True
+2025-04-05 11:51:21,027 - root - INFO - Testing direct import of streamlit
+2025-04-05 11:51:21,919 - root - INFO - Import test stdout: Streamlit version: 1.44.1
+
+2025-04-05 11:51:21,924 - root - INFO - Testing imports for other dependencies
+2025-04-05 11:51:25,863 - root - INFO - Test output: Pandas version: 2.2.3
+2025-04-05 11:51:26,062 - root - INFO - Test output: Plotly version: 6.0.1
+2025-04-05 11:51:26,122 - root - INFO - Test output: Bcrypt imported successfully
+2025-04-05 11:51:26,275 - root - INFO - Test output: Psycopg2 version: 2.9.10 (dt dec pq3 ext lo64)

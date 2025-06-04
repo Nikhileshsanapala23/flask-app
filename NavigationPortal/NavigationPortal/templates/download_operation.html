@@ -1,0 +1,387 @@
+{% extends 'base.html' %}
+
+{% block title %}Schedule Download - JSON Downloader Portal{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="card border-0 shadow-sm">
+            <div class="card-body p-4">
+                <h1>Schedule Download</h1>
+                <p class="text-muted">Select your portal credentials and date range to schedule a JSON download.</p>
+                
+                <div class="row mt-4">
+                    <div class="col-md-8 mx-auto">
+                        <!-- Tabs for Submission and Remittance -->
+                        <ul class="nav nav-tabs mb-4" id="downloadTabs" role="tablist">
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link active" id="submission-tab" data-bs-toggle="tab" data-bs-target="#submission" 
+                                        type="button" role="tab" aria-controls="submission" aria-selected="true">
+                                    Submission
+                                </button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="remittance-tab" data-bs-toggle="tab" data-bs-target="#remittance" 
+                                        type="button" role="tab" aria-controls="remittance" aria-selected="false">
+                                    Remittance
+                                </button>
+                            </li>
+                        </ul>
+                        
+                        <!-- Tab Content -->
+                        <div class="tab-content" id="downloadTabsContent">
+                            <!-- Submission Tab -->
+                            <div class="tab-pane fade show active" id="submission" role="tabpanel" aria-labelledby="submission-tab">
+                                <div class="card">
+                                    <div class="card-header bg-dark text-white">
+                                        <h5 class="mb-0">Submission Download Parameters</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        {% if credentials %}
+                                        <form method="POST" action="{{ url_for('schedule_download') }}" id="submission-form">
+                                            <input type="hidden" name="download_type" value="submission">
+                                            
+                                            <div class="mb-3">
+                                                <label for="credential_id" class="form-label">Select Portal</label>
+                                                <select class="form-select" id="credential_id" name="credential_id" required onchange="updateFacilityUsername(this, 'facility_username')">
+                                                    <option value="" selected disabled>Choose a portal...</option>
+                                                    {% for credential in credentials %}
+                                                    <option value="{{ credential.id }}" data-username="{{ credential.username }}">{{ credential.portal.name }}</option>
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                            
+                                            <div class="mb-3">
+                                                <label for="facility_username" class="form-label">Facility Username</label>
+                                                <input type="text" class="form-control" id="facility_username" name="facility_username" placeholder="Enter facility username" required>
+                                                <small class="form-text text-muted">Auto-populated from credential, but can be changed if needed.</small>
+                                            </div>
+                                            
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="mb-3">
+                                                        <label for="start_date" class="form-label">Start Date</label>
+                                                        <input type="date" class="form-control" id="start_date" name="start_date" required>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="mb-3">
+                                                        <label for="end_date" class="form-label">End Date</label>
+                                                        <input type="date" class="form-control" id="end_date" name="end_date" required>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="alert alert-info">
+                                                <small>
+                                                    <i class="fas fa-info-circle me-2"></i>
+                                                    The system will download Submission data for the specified facility and date range.
+                                                </small>
+                                            </div>
+                                            
+                                            <div class="d-grid mt-4">
+                                                <button type="submit" class="btn btn-dark download-btn" data-form-id="submission-form">Schedule Submission Download</button>
+                                            </div>
+                                        </form>
+                                        {% else %}
+                                        <div class="alert alert-warning">
+                                            <p class="mb-0">You don't have any credentials stored yet. Please <a href="{{ url_for('user_credentials') }}" class="alert-link">add a credential</a> first.</p>
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Remittance Tab -->
+                            <div class="tab-pane fade" id="remittance" role="tabpanel" aria-labelledby="remittance-tab">
+                                <div class="card">
+                                    <div class="card-header bg-dark text-white">
+                                        <h5 class="mb-0">Remittance Download Parameters</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        {% if credentials %}
+                                        <form method="POST" action="{{ url_for('schedule_download') }}" id="remittance-form">
+                                            <input type="hidden" name="download_type" value="remittance">
+                                            
+                                            <div class="mb-3">
+                                                <label for="credential_id_remit" class="form-label">Select Portal</label>
+                                                <select class="form-select" id="credential_id_remit" name="credential_id" required onchange="updateFacilityUsername(this, 'facility_username_remit')">
+                                                    <option value="" selected disabled>Choose a portal...</option>
+                                                    {% for credential in credentials %}
+                                                    <option value="{{ credential.id }}" data-username="{{ credential.username }}">{{ credential.portal.name }}</option>
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                            
+                                            <div class="mb-3">
+                                                <label for="facility_username_remit" class="form-label">Facility Username</label>
+                                                <input type="text" class="form-control" id="facility_username_remit" name="facility_username" placeholder="Enter facility username" required>
+                                                <small class="form-text text-muted">Auto-populated from credential, but can be changed if needed.</small>
+                                            </div>
+                                            
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="mb-3">
+                                                        <label for="start_date_remit" class="form-label">Start Date</label>
+                                                        <input type="date" class="form-control" id="start_date_remit" name="start_date" required>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="mb-3">
+                                                        <label for="end_date_remit" class="form-label">End Date</label>
+                                                        <input type="date" class="form-control" id="end_date_remit" name="end_date" required>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="alert alert-info">
+                                                <small>
+                                                    <i class="fas fa-info-circle me-2"></i>
+                                                    The system will download Remittance data for the specified facility and date range.
+                                                </small>
+                                            </div>
+                                            
+                                            <div class="d-grid mt-4">
+                                                <button type="submit" class="btn btn-dark download-btn" data-form-id="remittance-form">Schedule Remittance Download</button>
+                                            </div>
+                                        </form>
+                                        {% else %}
+                                        <div class="alert alert-warning">
+                                            <p class="mb-0">You don't have any credentials stored yet. Please <a href="{{ url_for('user_credentials') }}" class="alert-link">add a credential</a> first.</p>
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Progress Tracker Section - Hidden by default -->
+                        <div id="download-progress-section" class="card mt-4" style="display: none;">
+                            <div class="card-header bg-dark text-white">
+                                <h5 class="mb-0">Download Progress</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="alert alert-primary">
+                                    <p id="download-status-message">Download is being processed...</p>
+                                </div>
+                                <div class="progress mb-3">
+                                    <div id="download-progress-bar" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">0%</div>
+                                </div>
+                                <div class="d-flex justify-content-between">
+                                    <span id="download-start-time"></span>
+                                    <span id="download-eta">Estimating time remaining...</span>
+                                </div>
+                                <div class="text-center mt-3">
+                                    <button id="refresh-status-btn" class="btn btn-sm btn-outline-dark">
+                                        <i class="fas fa-sync-alt me-1"></i> Refresh Status
+                                    </button>
+                                    <a id="view-download-history-btn" href="{{ url_for('download_history') }}" class="btn btn-sm btn-outline-dark ms-2">
+                                        <i class="fas fa-history me-1"></i> View All Downloads
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Completion confirmation dialog - Hidden by default -->
+                        <div id="download-complete-alert" class="alert alert-success alert-dismissible fade" role="alert" style="display: none;">
+                            <strong>Download Complete!</strong> <span id="download-complete-message">Your download has been successfully processed.</span>
+                            <a href="{{ url_for('download_history') }}" class="alert-link">View download details</a>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                        
+                        <div class="card mt-4">
+                            <div class="card-header bg-dark text-white">
+                                <h5 class="mb-0">Instructions</h5>
+                            </div>
+                            <div class="card-body">
+                                <ol class="mb-0">
+                                    <li>Select the appropriate tab (Submission or Remittance) for the data you need.</li>
+                                    <li>Choose the portal you wish to use for the download.</li>
+                                    <li>Enter the facility username that will be used to access the data.</li>
+                                    <li>Specify the start and end dates for the data you want to download.</li>
+                                    <li>Click "Schedule Download" to queue the job.</li>
+                                    <li>The download progress will be displayed and updated automatically.</li>
+                                    <li>You can view detailed history in the <a href="{{ url_for('download_history') }}" class="text-dark">Download History</a> page.</li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Set default dates to today and 7 days ago
+    document.addEventListener('DOMContentLoaded', function() {
+        const today = new Date();
+        const sevenDaysAgo = new Date(today);
+        sevenDaysAgo.setDate(today.getDate() - 7);
+        
+        const formatDate = (date) => {
+            return date.toISOString().split('T')[0];
+        };
+        
+        // Set dates for both tabs
+        document.getElementById('start_date').value = formatDate(sevenDaysAgo);
+        document.getElementById('end_date').value = formatDate(today);
+        document.getElementById('start_date_remit').value = formatDate(sevenDaysAgo);
+        document.getElementById('end_date_remit').value = formatDate(today);
+        
+        // Setup download buttons
+        setupDownloadButtons();
+        
+        // Setup refresh status button
+        document.getElementById('refresh-status-btn').addEventListener('click', function() {
+            refreshDownloadStatus();
+        });
+    });
+    
+    let currentDownloadId = null;
+    let statusCheckInterval = null;
+    
+    function setupDownloadButtons() {
+        const downloadButtons = document.querySelectorAll('.download-btn');
+        
+        downloadButtons.forEach(function(button) {
+            button.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                // Get form ID from data attribute
+                const formId = this.getAttribute('data-form-id');
+                const form = document.getElementById(formId);
+                
+                // Submit form via AJAX
+                const formData = new FormData(form);
+                
+                fetch('{{ url_for("schedule_download") }}', {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Show progress section
+                        document.getElementById('download-progress-section').style.display = 'block';
+                        
+                        // Set download ID and start progress monitoring
+                        currentDownloadId = data.download_id;
+                        document.getElementById('download-start-time').textContent = 'Started: ' + new Date().toLocaleTimeString();
+                        
+                        // Update progress immediately and then set interval
+                        updateDownloadProgress();
+                        if (statusCheckInterval) {
+                            clearInterval(statusCheckInterval);
+                        }
+                        statusCheckInterval = setInterval(updateDownloadProgress, 3000); // Update every 3 seconds
+                    } else {
+                        alert('Error: ' + data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('An error occurred while scheduling the download.');
+                });
+            });
+        });
+    }
+    
+    function updateDownloadProgress() {
+        if (!currentDownloadId) return;
+        
+        fetch(`/api/download-status/${currentDownloadId}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.status) {
+                    const progressBar = document.getElementById('download-progress-bar');
+                    const statusMessage = document.getElementById('download-status-message');
+                    const etaMessage = document.getElementById('download-eta');
+                    
+                    // Update download type and facility info in status message
+                    let downloadTypeText = data.download_type ? (data.download_type.charAt(0).toUpperCase() + data.download_type.slice(1)) : 'Data';
+                    let facilityText = data.facility_username ? ` for facility ${data.facility_username}` : '';
+                    
+                    // Update progress bar
+                    let progress = 0;
+                    if (data.status === 'scheduled') {
+                        progress = 5;
+                        statusMessage.textContent = `${downloadTypeText} download${facilityText} scheduled and waiting to begin...`;
+                    } else if (data.status === 'in_progress') {
+                        progress = data.progress || 25; // If progress is available, use it, otherwise show 25%
+                        statusMessage.textContent = `${downloadTypeText} download${facilityText} in progress...`;
+                    } else if (data.status === 'completed') {
+                        progress = 100;
+                        statusMessage.textContent = `${downloadTypeText} download${facilityText} completed successfully!`;
+                        
+                        // Show completion alert with custom message
+                        const completeAlert = document.getElementById('download-complete-alert');
+                        const completeMessage = document.getElementById('download-complete-message');
+                        completeMessage.textContent = `Your ${downloadTypeText.toLowerCase()} download${facilityText} has been successfully processed.`;
+                        completeAlert.style.display = 'block';
+                        completeAlert.classList.add('show');
+                        
+                        // Clear interval
+                        if (statusCheckInterval) {
+                            clearInterval(statusCheckInterval);
+                            statusCheckInterval = null;
+                        }
+                    } else if (data.status === 'failed') {
+                        progress = 100;
+                        statusMessage.textContent = `${downloadTypeText} download${facilityText} failed: ` + (data.error_message || 'Unknown error');
+                        progressBar.classList.remove('bg-primary');
+                        progressBar.classList.add('bg-danger');
+                        
+                        // Clear interval
+                        if (statusCheckInterval) {
+                            clearInterval(statusCheckInterval);
+                            statusCheckInterval = null;
+                        }
+                    }
+                    
+                    progressBar.style.width = progress + '%';
+                    progressBar.setAttribute('aria-valuenow', progress);
+                    progressBar.textContent = progress + '%';
+                    
+                    // Update ETA
+                    if (data.estimated_completion) {
+                        etaMessage.textContent = 'Estimated completion: ' + data.estimated_completion;
+                    } else if (data.status === 'completed' || data.status === 'failed') {
+                        etaMessage.textContent = 'Finished at: ' + new Date().toLocaleTimeString();
+                    } else {
+                        etaMessage.textContent = 'Estimating time remaining...';
+                    }
+                }
+            })
+            .catch(error => {
+                console.error('Error updating progress:', error);
+            });
+    }
+    
+    function refreshDownloadStatus() {
+        // Manual refresh of status
+        if (currentDownloadId) {
+            updateDownloadProgress();
+        }
+    }
+    
+    function updateFacilityUsername(selectElement, targetFieldId) {
+        // Get the selected option
+        const selectedOption = selectElement.options[selectElement.selectedIndex];
+        
+        // Get the username from the data attribute
+        const username = selectedOption.getAttribute('data-username');
+        
+        // Update the facility username field
+        if (username) {
+            document.getElementById(targetFieldId).value = username;
+        }
+    }
+</script>
+{% endblock %}

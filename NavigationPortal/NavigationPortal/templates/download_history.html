@@ -1,0 +1,170 @@
+{% extends 'base.html' %}
+
+{% block title %}Download History - JSON Downloader Portal{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="card border-0 shadow-sm">
+            <div class="card-body p-4">
+                <h1>Download History</h1>
+                <p class="text-muted">View the status and results of your scheduled downloads.</p>
+                
+                {% if downloads %}
+                <div class="table-responsive mt-4">
+                    <table class="table table-hover">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>Portal</th>
+                                <th>Type</th>
+                                <th>Date Range</th>
+                                <th>Status</th>
+                                <th>Scheduled</th>
+                                <th>Details</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for download in downloads %}
+                            <tr>
+                                <td>{{ download.portal.name }}</td>
+                                <td>
+                                    {% if download.download_type == 'submission' %}
+                                    <span class="badge bg-secondary">Submission</span>
+                                    {% else %}
+                                    <span class="badge bg-dark">Remittance</span>
+                                    {% endif %}
+                                </td>
+                                <td>{{ download.start_date.strftime('%Y-%m-%d') }} to {{ download.end_date.strftime('%Y-%m-%d') }}</td>
+                                <td>
+                                    {% if download.status == 'scheduled' %}
+                                    <span class="badge bg-warning text-dark">Scheduled</span>
+                                    {% elif download.status == 'in_progress' %}
+                                    <span class="badge bg-info text-dark">In Progress</span>
+                                    {% elif download.status == 'completed' %}
+                                    <span class="badge bg-success">Completed</span>
+                                    {% else %}
+                                    <span class="badge bg-danger">Failed</span>
+                                    {% endif %}
+                                </td>
+                                <td>{{ download.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
+                                <td>
+                                    <button class="btn btn-sm btn-outline-dark" 
+                                            data-bs-toggle="modal" 
+                                            data-bs-target="#downloadDetailsModal{{ download.id }}">
+                                        Details
+                                    </button>
+                                </td>
+                            </tr>
+                            
+                            <!-- Download Details Modal -->
+                            <div class="modal fade" id="downloadDetailsModal{{ download.id }}" tabindex="-1" aria-hidden="true">
+                                <div class="modal-dialog modal-lg">
+                                    <div class="modal-content">
+                                        <div class="modal-header bg-dark text-white">
+                                            <h5 class="modal-title">Download Details</h5>
+                                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <h6>General Information</h6>
+                                                    <ul class="list-group mb-4">
+                                                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                            <span>Portal:</span>
+                                                            <span class="fw-bold">{{ download.portal.name }}</span>
+                                                        </li>
+                                                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                            <span>Credential:</span>
+                                                            <span>{{ download.credential.username }}</span>
+                                                        </li>
+                                                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                            <span>Facility Username:</span>
+                                                            <span>{{ download.facility_username }}</span>
+                                                        </li>
+                                                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                            <span>Download Type:</span>
+                                                            <span>
+                                                                {% if download.download_type == 'submission' %}
+                                                                <span class="badge bg-secondary">Submission</span>
+                                                                {% else %}
+                                                                <span class="badge bg-dark">Remittance</span>
+                                                                {% endif %}
+                                                            </span>
+                                                        </li>
+                                                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                            <span>Status:</span>
+                                                            {% if download.status == 'scheduled' %}
+                                                            <span class="badge bg-warning text-dark">Scheduled</span>
+                                                            {% elif download.status == 'in_progress' %}
+                                                            <span class="badge bg-info text-dark">In Progress</span>
+                                                            {% elif download.status == 'completed' %}
+                                                            <span class="badge bg-success">Completed</span>
+                                                            {% else %}
+                                                            <span class="badge bg-danger">Failed</span>
+                                                            {% endif %}
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                                
+                                                <div class="col-md-6">
+                                                    <h6>Date Information</h6>
+                                                    <ul class="list-group mb-4">
+                                                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                            <span>Data Start Date:</span>
+                                                            <span>{{ download.start_date.strftime('%Y-%m-%d') }}</span>
+                                                        </li>
+                                                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                            <span>Data End Date:</span>
+                                                            <span>{{ download.end_date.strftime('%Y-%m-%d') }}</span>
+                                                        </li>
+                                                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                            <span>Scheduled At:</span>
+                                                            <span>{{ download.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</span>
+                                                        </li>
+                                                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                            <span>Last Updated:</span>
+                                                            <span>{{ download.updated_at.strftime('%Y-%m-%d %H:%M:%S') }}</span>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                            
+                                            {% if download.file_path %}
+                                            <h6>File Information</h6>
+                                            <div class="alert alert-success">
+                                                <p><strong>File Path:</strong> {{ download.file_path }}</p>
+                                                <small>The JSON file was downloaded successfully and saved to the server.</small>
+                                            </div>
+                                            {% endif %}
+                                            
+                                            {% if download.error_message %}
+                                            <h6>Error Information</h6>
+                                            <div class="alert alert-danger">
+                                                <p><strong>Error Message:</strong></p>
+                                                <pre class="mb-0">{{ download.error_message }}</pre>
+                                            </div>
+                                            {% endif %}
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-outline-dark" data-bs-dismiss="modal">Close</button>
+                                            {% if download.status == 'scheduled' %}
+                                            <button type="button" class="btn btn-dark">Run Now</button>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="alert alert-info mt-4">
+                    <p class="mb-0">You haven't scheduled any downloads yet. Go to <a href="{{ url_for('download_operation') }}" class="alert-link">Schedule Download</a> to get started.</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,116 @@
+/* Global Styles */
+body {
+    font-family: 'Arial', sans-serif;
+    line-height: 1.6;
+    color: #333;
+    background-color: #f8f9fa;
+}
+
+/* Header & Footer Styles */
+.navbar-dark {
+    background-color: #212529 !important;
+}
+
+.footer {
+    margin-top: 3rem;
+    padding: 1.5rem 0;
+    background-color: #212529;
+    color: white;
+}
+
+/* Card Styles */
+.card {
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+.card-header {
+    border-top-left-radius: 8px !important;
+    border-top-right-radius: 8px !important;
+}
+
+/* Button Styles */
+.btn {
+    border-radius: 4px;
+    padding: 0.5rem 1rem;
+}
+
+.btn-dark {
+    background-color: #212529;
+    border-color: #212529;
+}
+
+.btn-dark:hover {
+    background-color: #343a40;
+    border-color: #343a40;
+}
+
+.btn-outline-dark {
+    color: #212529;
+    border-color: #212529;
+}
+
+.btn-outline-dark:hover {
+    background-color: #212529;
+    color: white;
+}
+
+/* Form Styles */
+.form-control {
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    padding: 0.5rem 0.75rem;
+}
+
+.form-control:focus {
+    border-color: #80bdff;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+/* Alert Styles */
+.alert {
+    border-radius: 4px;
+    padding: 1rem;
+}
+
+/* Table Styles */
+.table th {
+    font-weight: 600;
+}
+
+.table-hover tbody tr:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
+/* Badge Styles */
+.badge {
+    padding: 0.4em 0.6em;
+    font-weight: 500;
+}
+
+/* Modal Styles */
+.modal-header {
+    border-bottom: 1px solid #dee2e6;
+}
+
+.modal-footer {
+    border-top: 1px solid #dee2e6;
+}
+
+/* Custom Styles */
+.shadow-sm {
+    box-shadow: 0 .125rem .25rem rgba(0,0,0,.075) !important;
+}
+
+/* Utility Classes */
+.text-muted {
+    color: #6c757d !important;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .container {
+        padding-left: 15px;
+        padding-right: 15px;
+    }
+}
